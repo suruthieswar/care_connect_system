@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice and Text Notes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f8ff;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #2d3436;
+            margin-bottom: 40px;
+        }
+        textarea {
+            margin-top: 20px;
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+        }
+        #transcription {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #ffffff;
+            height: 150px;
+            overflow-y: auto;
+        }
+        .btn {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h1>Voice and Text Notes</h1>
+        
+        <!-- Voice Note Section -->
+        <h2>Voice Notes</h2>
+        <div class="mb-3">
+            <label for="language" class="form-label">Select Language:</label>
+            <select id="language" class="form-select" style="width: 200px; margin: 0 auto;">
+                <option value="en-US" selected>English</option>
+                <option value="ta-IN">Tamil</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" onclick="startRecording()">Start Voice Recording</button>
+        <button class="btn btn-secondary" onclick="stopRecording()">Stop Recording</button>
+        <div id="transcription">
+            <p>Voice transcription will appear here...</p>
+        </div>
+        <button class="btn btn-success" onclick="saveVoiceNote()">Save Voice Note</button>
+
+        <hr>
+
+        <!-- Typed Note Section -->
+        <h2>Typed Notes</h2>
+        <textarea id="typedNote" placeholder="Type your note here..."></textarea>
+        <button class="btn btn-success" onclick="saveTypedNote()">Save Typed Note</button>
+
+        <hr>
+
+        <!-- Links to View Notes -->
+        <div>
+            <a href="view_voice_notes.html" class="btn btn-info">View Voice Notes</a>
+            <a href="view_typed_notes.html" class="btn btn-info">View Typed Notes</a>
+        </div>
+    </div>
+
+    <script>
+        let recognition;
+        let isRecording = false;
+
+        // Initialize SpeechRecognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("Sorry, your browser does not support Speech Recognition. Try Chrome or Edge.");
+        } else {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onresult = function (event) {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0].transcript)
+                    .join("");
+                document.getElementById("transcription").innerText = transcript;
+            };
+
+            recognition.onerror = function (event) {
+                alert("Speech Recognition Error: " + event.error);
+            };
+        }
+
+        function startRecording() {
+            if (!isRecording) {
+                const language = document.getElementById("language").value;
+                recognition.lang = language; // Set language dynamically
+                recognition.start();
+                isRecording = true;
+                alert("Recording started. Speak into the microphone.");
+            }
+        }
+
+        function stopRecording() {
+            if (isRecording) {
+                recognition.stop();
+                isRecording = false;
+                alert("Recording stopped.");
+            }
+        }
+
+        function saveVoiceNote() {
+            const transcription = document.getElementById("transcription").innerText;
+            if (transcription && transcription !== "Voice transcription will appear here...") {
+                const voiceNotes = JSON.parse(localStorage.getItem("voiceNotes")) || [];
+                voiceNotes.push(transcription); // Add to voice notes
+                localStorage.setItem("voiceNotes", JSON.stringify(voiceNotes));
+                alert("Voice Note saved successfully!");
+                document.getElementById("transcription").innerText = "Voice transcription will appear here...";
+            } else {
+                alert("No transcription to save.");
+            }
+        }
+
+        function saveTypedNote() {
+            const typedNote = document.getElementById("typedNote").value.trim();
+            if (typedNote) {
+                const typedNotes = JSON.parse(localStorage.getItem("typedNotes")) || [];
+                typedNotes.push(typedNote); // Add to typed notes
+                localStorage.setItem("typedNotes", JSON.stringify(typedNotes));
+                alert("Typed Note saved successfully!");
+                document.getElementById("typedNote").value = ""; // Clear textarea
+            } else {
+                alert("No typed note to save.");
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

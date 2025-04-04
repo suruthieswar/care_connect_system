@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOS Button</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f8d7da;
+    }
+
+    .dashboard-button {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: #ff4d4d;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .dashboard-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+<div>
+  <div class="dashboard-button" onclick="triggerSOS()">SOS</div>
+</div>
+
+<script>
+  function triggerSOS() {
+    // Example: Alert message
+    alert("SOS Alert triggered! Help is on the way.");
+
+    // Example: Send email
+    // window.location.href = "mailto:emergency@example.com?subject=SOS Alert&body=Help is needed immediately!";
+
+    // Example: Send SMS (requires specific SMS gateway or device setup)
+    // window.location.href = "sms:+1234567890?body=SOS! Help needed.";
+
+    // Example: Call an API
+    /*
+    fetch("https://your-api-endpoint.com/send-sos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "SOS Alert triggered!",
+        location: "123.456, -78.901" // Add actual location data if available
+      })
+    })
+    .then(response => response.json())
+    .then(data => console.log("SOS sent:", data))
+    .catch(error => console.error("Error sending SOS:", error));
+    */
+  }
+</script>
+
+</body>
+</html>

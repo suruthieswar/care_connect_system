@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS Button</title>
+    <style>
+        .sos-button {
+            font-size: 24px;
+            padding: 20px 40px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .sos-button:hover {
+            background-color: darkred;
+        }
+        .nav-buttons {
+    display: flex; /* Makes it a flex container */
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+     /* Ensures the container takes full viewport height */
+}
+
+.nav-buttons a {
+    text-decoration: none; /* Removes underline */
+    padding: 10px 20px; /* Adds padding for the button */
+    background-color: #67b56b; /* Button background color */
+    color: white; /* Button text color */
+    border-radius: 5px; /* Rounds the corners */
+    font-size: 16px; /* Adjusts text size */
+    font-family: Arial, sans-serif; /* Adjusts font */
+    transition: background-color 0.3s ease; /* Adds hover animation */
+}
+
+.nav-buttons a:hover {
+    background-color: #0056b3; /* Darkens button color on hover */
+}
+    </style>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 50px;">
+        <button class="sos-button" onclick="sendSOS()">SOS</button><br><br><br><br>
+    </div>
+
+    <!-- Link to the JavaScript file -->
+    <script src="sos1.js"></script>
+    <div class="nav-buttons">
+        <a href="help.html">BACK</a>
+    </div>
+</body>
+</html>

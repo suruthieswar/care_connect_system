@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamil Books</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        header {
+            background-color: #4682b4; /* Steel blue */
+            padding: 20px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        section {
+            margin: 20px auto;
+            padding: 15px;
+            max-width: 600px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        section h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        section ul li {
+            margin: 10px 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        #books-container {
+            display: none;
+            margin: 20px auto;
+            padding: 15px;
+        }
+
+        .nav-buttons {
+            display: flex; /* Makes it a flex container */
+            justify-content: center; /* Centers horizontally */
+            align-items: center; /* Centers vertically */
+        }
+
+        .nav-buttons a {
+            text-decoration: none; /* Removes underline */
+            padding: 10px 20px; /* Adds padding for the button */
+            background-color: #45a049; /* Button background color */
+            color: white; /* Button text color */
+            border-radius: 5px; /* Rounds the corners */
+            font-size: 16px; /* Adjusts text size */
+            font-family: Arial, sans-serif; /* Adjusts font */
+            transition: background-color 0.3s ease; /* Adds hover animation */
+        }
+
+        .nav-buttons a:hover {
+            background-color: #0056b3; /* Darkens button color on hover */
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>தமிழ் புத்தகத் தொகுப்பு</h1>
+</header>
+
+<!-- Genre Dropdown -->
+<br><br><div class="dropdown">
+    <select onchange="loadBooks(this.value)">
+        <option value="">வகையைத் தேர்வுசெய்க</option>
+        <option value="history">History (வரலாறு)</option>
+        <option value="literature">Literature (இலக்கியம்)</option>
+        <option value="self-help">Self-Help (சுய உதவி)</option>
+        <option value="fiction">Fiction (கற்பனை)</option>
+        <option value="Science">Science(அறிவியல்)</option>
+        <option value="Autobiograpy">Autobiograpy (சுயசரிதை)</option>
+    </select>
+</div>
+
+<!-- Motivational Quotes Section for Above 40 Years -->
+<section id="motivation-section">
+    <h2>உணர்ச்சிமிக்க மேற்கோள்கள்</h2>
+    <ul>
+        <li>"நீங்கள் எப்போது தொடங்கினாலும், உங்கள் இலக்கை அடையும் நேரம் வரும்."</li>
+        <li>"வாழ்க்கையின் எத்தனை பிரச்சனைகளும் உங்களை வெற்றிக்கான வழிக்கு வழிகாட்டும்."</li>
+    </ul>
+</section>
+
+<!-- Importance of Studying Section for Above 40 Years -->
+<section id="importance-section">
+    <h2>கற்றலின் முக்கியத்துவம்</h2>
+    <ul>
+        <li>நீங்கள் எப்போதும் கற்றுக்கொண்டு, உங்கள் அறிவை மேம்படுத்த முடியும்.</li>
+        <li>வயதுக்கு மேல் செல்லும் போது, சுய வளர்ச்சியோடு கூடிய அறிவு உங்களுக்குத் தேவை.</li>
+    </ul>
+</section>
+
+<!-- Book Cards - Dynamically populated -->
+<div id="books-container" class="container">
+    <!-- Books will be loaded here based on selected genre -->
+</div>
+
+<!-- Include JS File -->
+<script>
+    // Function to load books based on selected genre
+    function loadBooks(genre) {
+        const booksContainer = document.getElementById('books-container');
+        const motivationSection = document.getElementById('motivation-section');
+        const importanceSection = document.getElementById('importance-section');
+
+        // Clear previous books
+        booksContainer.innerHTML = "";
+
+        // Hide motivational quotes and importance when genre is selected
+        if (genre) {
+            motivationSection.style.display = "none";
+            importanceSection.style.display = "none";
+            booksContainer.style.display = "block";
+        }
+
+        // Load books based on genre
+        if (genre === "history") {
+            booksContainer.innerHTML = `
+                <div class="book-card" onclick="window.location.href='https://amzn.in/d/8z7pI0O'">
+                    <img src="https://image.vikatan.com/books/medium/2175.jpg" alt="பொன்னியின் செல்வன்">
+                    <h3>பொன்னியின் செல்வன்</h3>
+                </div>
+                <div class="book-card" onclick="window.location.href='https://amzn.in/d/ihSIyuP'">
+                    <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/book/w/3/b/valmiki-ramayana-paperback-tamil-original-imagwvbkamchuwnq.jpeg?q=70&crop=false" alt="ராமாயணம்">
+                    <h3>ராமாயணம்</h3>
+                </div>
+                <div class="book-card" onclick="window.location.href='https://amzn.in/d/5KbreWs'">
+                    <img src="https://giri.in/cdn/shop/products/9105886-1_5e3fa7c8-025a-4b44-97a9-b78459f15113_600x600.jpg?v=1707289630" alt="மகாபாரதம்">
+                    <h3>மகாபாரதம்</h3>
+                </div>
+                <div class="book-card" onclick="window.location.href='https://amzn.in/d/dflzf8k'">
+                    <img src="https://m.media-amazon.com/images/I/81P+bo89ERL._SY385_.jpg" alt="சுதந்திர இந்திய வரலாறு">
+                    <h3>சுதந்திர இந்திய வரலாறு</h3>
+                </div>
+            `;
+        } else if (genre === "literature") {
+            booksContainer.innerHTML = `
+                <div class="book-card" onclick="window.location.href='https://amzn.in/d/adhoChT'">
+                    <img src="https://www.noolulagam.com/book_images/18447.jpg" alt="காண்ட புராணம்">
+                    <h3>கந்த புராணம்</h3>
+                </div>
+                <div class="book-card" onclick="window.location.href='https://amzn.in/d/hFjwevn'">
+                    <img src="https://giri.in/cdn/shop/products/91498310-1_silapathikaram_puliyur_kesikan_85c6a479-666e-4907-bd53-4ac1fdcc9020_600x600.jpg?v=1707290690" alt="சிலப்பதிகாரம்">
+                    <h3>சிலப்பதிகாரம்</h3>
+                </div>
+                <div class="book-card" onclick="window.location.href='https://amzn.in/d/4xDxoYP'">
+                    <img src="https://m.media-amazon.com/images/I/719KVYh8e5L._SY385_.jpg" alt="தொல்காப்பியம்">
+                    <h3>தொல்காப்பியம்</h3>
+                </div>
+                <div class="book-card" onclick="window.location.href='https://amzn.in/d/iQznfAR'">
+                    <img src="https://m.media-amazon.com/images/I/61RWg5SsV-L._SY385_.jpg" alt="சீவக சிந்தாமணி">
+                    <h3>சீவக சிந்தாமணி</h3>
+                </div>
+            `;
+        }
+        // Add other genres here as needed
+    }
+
+    // Voice Command for "Go Back"
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ta-IN'; // Set to Tamil language
+    recognition.continuous = true; // Keep recognizing until stopped
+    recognition.interimResults = false; // Don't return partial results
+
+    // Start recognition
+    recognition.start();
+
+    recognition.onstart = () => {
+        console.log('Voice recognition started');
+    };
+
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error', event.error);
+    };
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[event.resultIndex][0].transcript.toLowerCase();
+        console.log('Recognized:', transcript);
+
+        // If "go back" or "வெளியோ" is recognized, go back
+        if (transcript.includes('back') || transcript.includes('வெளியோ')) {
+            window.history.back();
+        }
+    };
+
+    function stopRecognition() {
+        recognition.stop();
+        console.log('Voice recognition stopped');
+    }
+</script>
+
+<div class="nav-buttons">
+    <a href="elder_dashboard.php">Home</a>
+</div>
+
+</body>
+</html>

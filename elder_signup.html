@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elder Signup</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap&libraries=places&v=weekly" async></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f8ff, #e6f7ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .map-container {
+            height: 300px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Sign Up for Elder Care Connect</h2>
+    <div class="form-container">
+        <form id="signupForm">
+            <input type="text" id="name" placeholder="Full Name" required><br>
+            <input type="number" id="age" placeholder="Age" required><br>
+            <input type="tel" id="phone" placeholder="Phone Number" required><br>
+            <input type="text" id="location" placeholder="Location" readonly required><br>
+            <div class="map-container" id="map"></div>
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+
+    <script>
+        let map, geocoder, marker;
+
+        function initMap() {
+            // Initialize the map
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 12.9716, lng: 77.5946 },  // Default to Bangalore
+                zoom: 12,
+            });
+            geocoder = new google.maps.Geocoder();
+            marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+            });
+
+            // Event listener to update location when marker is moved
+            google.maps.event.addListener(marker, 'dragend', function () {
+                geocoder.geocode({ 'location': marker.getPosition() }, function (results, status) {
+                    if (status === 'OK' && results[0]) {
+                        document.getElementById('location').value = results[0].formatted_address;
+                    }
+                });
+            });
+
+            // Click event to place the marker
+            google.maps.event.addListener(map, 'click', function (event) {
+                marker.setPosition(event.latLng);
+                geocoder.geocode({ 'location': event.latLng }, function (results, status) {
+                    if (status === 'OK' && results[0]) {
+                        document.getElementById('location').value = results[0].formatted_address;
+                    }
+                });
+            });
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Store the signup data (for simplicity, using localStorage here)
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const phone = document.getElementById('phone').value;
+            const location = document.getElementById('location').value;
+
+            localStorage.setItem('elderName', name);
+            localStorage.setItem('elderAge', age);
+            localStorage.setItem('elderPhone', phone);
+            localStorage.setItem('elderLocation', location);
+
+            // Redirect to login page after signup
+            window.location.href = 'elder_login.html';
+        });
+    </script>
+</body>
+</html>

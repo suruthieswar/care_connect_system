@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Notes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Voice Notes</h1>
+
+        <div class="d-flex justify-content-center mb-3">
+            <button class="btn btn-danger" id="start-recording" onclick="startRecording()">Start</button>
+            <button class="btn btn-warning" id="stop-recording" onclick="stopRecording()" disabled>Stop</button>
+        </div>
+
+        <h3>Saved Voice Notes</h3>
+        <ul id="voice-notes-list" class="list-group"></ul>
+
+        <div class="d-flex justify-content-center mt-4">
+            <button class="btn btn-outline-secondary" onclick="goBack()">Back</button>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get('category');
+        const voiceNotes = JSON.parse(localStorage.getItem(`${category}-voice`)) || [];
+
+        let mediaRecorder;
+        let audioChunks = [];
+
+        // Enable or disable buttons for start and stop recording
+        function toggleButtons() {
+            document.getElementById('start-recording').disabled = !document.getElementById('start-recording').disabled;
+            document.getElementById('stop-recording').disabled = !document.getElementById('stop-recording').disabled;
+        }
+
+        // Start recording audio
+        function startRecording() {
+            toggleButtons();
+
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audio = new Audio(audioUrl);
+                        saveVoiceNote(audioUrl);
+                    };
+                    mediaRecorder.start();
+                })
+                .catch(err => {
+                    console.error('Error accessing audio devices:', err);
+                    alert('Unable to access your microphone.');
+                });
+        }
+
+        // Stop recording audio
+        function stopRecording() {
+            mediaRecorder.stop();
+            toggleButtons();
+        }
+
+        // Save the recorded audio as a voice note
+        function saveVoiceNote(audioUrl) {
+            voiceNotes.push(audioUrl);
+            localStorage.setItem(`${category}-voice`, JSON.stringify(voiceNotes));
+            displayVoiceNotes();
+        }
+
+        // Display saved voice notes
+        function displayVoiceNotes() {
+            const notesList = document.getElementById('voice-notes-list');
+            notesList.innerHTML = '';
+            voiceNotes.forEach((note, index) => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.innerHTML = `
+                    <audio controls>
+                        <source src="${note}" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                `;
+                const deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('btn', 'btn-danger', 'btn-sm');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = () => deleteVoiceNote(index);
+                li.appendChild(deleteBtn);
+                notesList.appendChild(li);
+            });
+        }
+
+        // Delete a voice note
+        function deleteVoiceNote(index) {
+            voiceNotes.splice(index, 1);
+            localStorage.setItem(`${category}-voice`, JSON.stringify(voiceNotes));
+            displayVoiceNotes();
+        }
+
+        // Go back to the previous page
+        function goBack() {
+            window.history.back();
+        }
+
+        // Initialize Speech Recognition for voice commands
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US'; // Set to English language
+        recognition.continuous = true; // Keep recognizing until stopped
+        recognition.interimResults = false; // Don't return partial results
+
+        // Start recognition
+        recognition.start();
+
+        recognition.onstart = () => {
+            console.log('Voice recognition started');
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error', event.error);
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[event.resultIndex][0].transcript.toLowerCase();
+            console.log('Recognized:', transcript);
+
+            // Check if the recognized transcript contains the word "start"
+            if (transcript.includes('start')) {
+                startRecording(); // Trigger start recording
+            }
+
+            // Check if the recognized transcript contains the word "stop"
+            if (transcript.includes('stop')) {
+                stopRecording(); // Trigger stop recording
+            }
+
+            // Check if the recognized transcript contains the word "back"
+            if (transcript.includes('back')) {
+                goBack(); // Trigger go back
+            }
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

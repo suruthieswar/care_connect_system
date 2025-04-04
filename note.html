@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder App with Notifications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .reminder-input {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .reminders {
+            list-style-type: none;
+            padding: 0;
+        }
+        .reminder {
+            background-color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .delete-button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #ff4d4d;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: #d93636;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Reminder App with Notifications</h1>
+    <div class="reminder-input">
+        <textarea id="reminderMessage" placeholder="Enter your reminder message..."></textarea>
+        <input type="number" id="reminderMinutes" placeholder="Set reminder after minutes..." />
+        <button onclick="setReminder()">Set Reminder</button>
+    </div>
+    <ul id="remindersList" class="reminders"></ul>
+
+    <script>
+    // Check if the browser supports service workers and register the service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js').then(function(registration) {
+            console.log('Service Worker registered with scope: ', registration.scope);
+        }).catch(function(error) {
+            console.log('Service Worker registration failed: ', error);
+        });
+
+        // Request notification permission
+        if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(function(permission) {
+                if (permission === 'granted') {
+                    console.log('Notification permission granted');
+                }
+            });
+        }
+    }
+
+    // Function to play music for notification
+    function playNotificationSound() {
+        const audio = new Audio('notification-sound.mp3');  // Make sure the path is correct
+        audio.play();
+    }
+
+    // Show notification and play music when the reminder is triggered
+    function showNotification(message) {
+        if (Notification.permission === 'granted') {
+            new Notification('Reminder', { body: message });
+        }
+        playNotificationSound();  // Play the sound when the reminder triggers
+    }
+
+    // Function to set a reminder
+    function setReminder() {
+        const message = document.getElementById('reminderMessage').value;
+        const minutes = document.getElementById('reminderMinutes').value;
+
+        if (message.trim() === "" || minutes.trim() === "") {
+            alert("Please enter a message and the number of minutes.");
+            return;
+        }
+
+        const timeDifference = parseInt(minutes) * 60000;
+        const reminderTime = new Date().getTime() + timeDifference;
+
+        const reminder = { message, timeDifference, createdTime: new Date().toLocaleString() };
+
+        saveReminder(reminder);
+        displayReminder(reminder);
+
+        setTimeout(() => {
+            alert(`Reminder: ${message}`);
+            showNotification(message);
+            deleteReminderByCreatedTime(reminder.createdTime);
+        }, timeDifference);
+
+        document.getElementById('reminderMessage').value = '';
+        document.getElementById('reminderMinutes').value = '';
+    }
+
+    // Save reminder to localStorage
+    function saveReminder(reminder) {
+        let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+        reminders.push(reminder);
+        localStorage.setItem('reminders', JSON.stringify(reminders));
+    }
+
+    // Load and display reminders from localStorage
+    function loadReminders() {
+        const reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+        reminders.forEach(reminder => {
+            displayReminder(reminder);
+
+            const currentTime = new Date().getTime();
+            const reminderTime = new Date(reminder.createdTime).getTime() + reminder.timeDifference;
+            const timeDifference = reminderTime - currentTime;
+
+            if (timeDifference > 0) {
+                setTimeout(() => {
+                    alert(`Reminder: ${reminder.message}`);
+                    showNotification(reminder.message);
+                    deleteReminderByCreatedTime(reminder.createdTime);
+                }, timeDifference);
+            }
+        });
+    }
+
+    // Display a reminder
+    function displayReminder(reminder) {
+        const remindersList = document.getElementById('remindersList');
+        const reminderItem = document.createElement('li');
+        reminderItem.className = 'reminder';
+        reminderItem.innerHTML = `
+            <p>${reminder.message}</p>
+            <p><strong>Reminder Set For:</strong> ${reminder.createdTime} (+${reminder.timeDifference / 60000} minutes)</p>
+            <button class="delete-button" onclick="deleteReminder(this, '${reminder.createdTime}')">Delete</button>
+        `;
+        remindersList.appendChild(reminderItem);
+    }
+
+    // Delete reminder
+    function deleteReminder(button, createdTime) {
+        const reminderItem = button.parentElement;
+        reminderItem.remove();
+        deleteReminderByCreatedTime(createdTime);
+    }
+
+    // Delete reminder from localStorage
+    function deleteReminderByCreatedTime(createdTime) {
+        let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+        reminders = reminders.filter(reminder => reminder.createdTime !== createdTime);
+        localStorage.setItem('reminders', JSON.stringify(reminders));
+    }
+
+    // Load reminders when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadReminders();
+    });
+    </script>
+
+</body>
+</html>

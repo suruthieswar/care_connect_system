@@ -1,0 +1,57 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #add8e6; /* Light blue background */
+    color: #000; /* Black text for better contrast */
+}
+
+header {
+    background-color: #4682b4; /* Steel blue */
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.dropdown {
+    width: 300px;
+    padding: 10px;
+    margin: 20px auto;
+    text-align: center;
+    font-size: 20px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #4682b4;
+}
+
+.book-card {
+    cursor: pointer;
+    display: inline-block;
+    width: 240px;
+    margin: 15px;
+    text-align: center;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #4682b4;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+.book-card:hover {
+    transform: scale(1.05);
+    background-color: #87ceeb; /* Sky blue */
+}
+
+.book-card img {
+    max-width: 100%;
+    height: 200px;
+    border-radius: 5px;
+}
+
+.book-card h3 {
+    font-size: 18px;
+    margin-top: 10px;
+    color: #333;
+}

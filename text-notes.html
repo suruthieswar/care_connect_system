@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Notes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Text Notes</h1>
+        <textarea id="typed-note" class="form-control my-3" rows="4" placeholder="Type your note here..."></textarea>
+        <button class="btn btn-primary w-100 mb-3" onclick="saveTypedNote()">Save Note</button>
+        
+        <h3>Saved Notes</h3>
+        <ul id="typed-notes-list" class="list-group"></ul>
+
+        <div class="d-flex justify-content-center mt-4">
+            <button class="btn btn-outline-secondary" onclick="goBack()">Back</button>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get('category');
+        const notes = JSON.parse(localStorage.getItem(category)) || [];
+
+        // Initialize Speech Recognition for voice commands
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US'; // Set to English language
+        recognition.continuous = true; // Keep recognizing until stopped
+        recognition.interimResults = false; // Don't return partial results
+        recognition.start(); // Start recognition immediately when the page loads
+
+        recognition.onstart = () => {
+            console.log('Voice recognition started');
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error', event.error);
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[event.resultIndex][0].transcript.toLowerCase();
+            console.log('Recognized:', transcript);
+
+            // Insert recognized speech into the textarea
+            document.getElementById('typed-note').value = transcript;
+
+            // Command to save the note
+            if (transcript.includes('save')) {
+                saveTypedNote();
+            }
+
+            // Command to go back
+            if (transcript.includes('back')) {
+                goBack();
+            }
+        };
+
+        function saveTypedNote() {
+            const note = document.getElementById('typed-note').value.trim();
+            if (note) {
+                notes.push(note);
+                localStorage.setItem(category, JSON.stringify(notes));
+                document.getElementById('typed-note').value = ''; // Clear the text area
+                displayNotes();
+            }
+        }
+
+        function displayNotes() {
+            const notesList = document.getElementById('typed-notes-list');
+            notesList.innerHTML = '';
+            notes.forEach((note, index) => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.textContent = note;
+                const deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('btn', 'btn-danger', 'btn-sm');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = () => deleteNote(index);
+                li.appendChild(deleteBtn);
+                notesList.appendChild(li);
+            });
+        }
+
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            localStorage.setItem(category, JSON.stringify(notes));
+            displayNotes();
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        displayNotes();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

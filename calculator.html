@@ -1,0 +1,85 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Calculator</title>
+  <link rel="stylesheet" href="calculator.css">
+  <style>
+    /* Optional: Style for the voice status message */
+    .voice-status {
+      text-align: center;
+      font-size: 16px;
+      margin-top: 20px;
+      color: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+  <section>
+    <div class="container">
+      <div id="display"></div>
+      <div class="buttons">
+        <div class="button">Clear</div>
+        <div class="button">/</div>
+        <div class="button">*</div>
+        <div class="button">&larr;</div>
+        <div class="button">7</div>
+        <div class="button">8</div>
+        <div class="button">9</div>
+        <div class="button">-</div>
+        <div class="button">4</div>
+        <div class="button">5</div>
+        <div class="button">6</div>
+        <div class="button">+</div>
+        <div class="button">1</div>
+        <div class="button">2</div>
+        <div class="button">3</div>
+        <div class="button">.</div>
+        <div class="button">(</div>
+        <div class="button">0</div>
+        <div class="button">)</div>
+        <div id="equal" class="button">=</div>
+      </div>
+    </div>
+  </section>
+  
+  <div class="nav-buttons" style="text-align:center; margin-top:20px;">
+    <a href="help.html">BACK</a>
+  </div>
+  
+  <!-- Display voice recognition status -->
+  <p class="voice-status" id="voiceStatus">Listening for "back" command...</p>
+
+  <script src="calculator.js"></script>
+  <script>
+    // Check for browser support of the Web Speech API
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if ('SpeechRecognition' in window) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true; // Keep listening
+      recognition.lang = 'en-US';
+      
+      recognition.onresult = function(event) {
+        // Get the latest result's transcript and convert it to lower case
+        const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+        console.log("Voice Command Recognized:", transcript);
+        
+        // If the spoken command contains "back", navigate to help.html
+        if (transcript.includes("back")) {
+          window.location.href = "help.html";
+        }
+      };
+      
+      recognition.onerror = function(event) {
+        console.error("Speech recognition error:", event.error);
+      };
+
+      // Start the speech recognition
+      recognition.start();
+    } else {
+      console.warn("Speech Recognition is not supported in this browser.");
+      document.getElementById("voiceStatus").textContent = "Voice commands are not supported in this browser.";
+    }
+  </script>
+</body>
+</html>

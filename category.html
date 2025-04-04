@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Notes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 id="category-title" class="text-center">Category Notes</h1>
+        
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-primary w-100 mb-3" id="text-notes-btn" onclick="navigateToTextNotes()">Text Notes</button>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-success w-100 mb-3" id="voice-notes-btn" onclick="navigateToVoiceNotes()">Voice Notes</button>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            <button class="btn btn-outline-secondary" onclick="goBack()">Back</button>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get('category');
+        document.getElementById('category-title').textContent = `${category} Notes`;
+
+        function navigateToTextNotes() {
+            window.location.href = `text-notes.html?category=${category}`;
+        }
+
+        function navigateToVoiceNotes() {
+            window.location.href = `voice-notes.html?category=${category}`;
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        // Initialize Speech Recognition for voice commands
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US'; // Set to English language
+        recognition.continuous = true; // Keep recognizing until stopped
+        recognition.interimResults = false; // Don't return partial results
+
+        // Start recognition
+        recognition.start();
+
+        recognition.onstart = () => {
+            console.log('Voice recognition started');
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error', event.error);
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[event.resultIndex][0].transcript.toLowerCase();
+            console.log('Recognized:', transcript);
+
+            // Trigger the respective buttons based on the recognized command
+            if (transcript.includes('voice')) {
+                document.getElementById('voice-notes-btn').click(); // Trigger "Voice Notes" button click
+            } else if (transcript.includes('text')) {
+                document.getElementById('text-notes-btn').click(); // Trigger "Text Notes" button click
+            }
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

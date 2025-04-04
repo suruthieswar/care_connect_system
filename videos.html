@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise Videos</title>
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exercise Videos</h1>
+        <div id="videoOutput"></div>
+    </div>
+
+    <script>
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                category: params.get('category'),
+                age: parseInt(params.get('age'))
+            };
+        }
+
+        function displayVideos() {
+            const { category, age } = getQueryParams();
+            const videoOutput = document.getElementById('videoOutput');
+            const videoData = {
+                "Breathing Exercises": [
+                    "https://www.youtube.com/embed/m4tSCe3Pp34",
+                    "https://www.youtube.com/embed/PyQwRMXNfUA"
+                ],
+                "Workouts": [
+                    "https://www.youtube.com/embed/VHyGqsPOUHs",
+                    "https://www.youtube.com/embed/zWsliwyEl-E"
+                ],
+                "Warmups": [
+                    "https://www.youtube.com/embed/xjHgGg_ZM5A",
+                    "https://www.youtube.com/embed/kLoASL_wmEo"
+                ],
+                "Yoga": {
+                    "40-50": [
+                        "https://www.youtube.com/embed/v7AYKMP6rOE",
+                        "https://www.youtube.com/embed/k9sQwFAGtZk"
+                    ],
+                    "50-60": [
+                        "https://www.youtube.com/embed/4pKly2JojMw",
+                        "https://www.youtube.com/embed/vt-6isQhOwY"
+                    ],
+                    "60-70": [
+                        "https://www.youtube.com/embed/KLfdb0b2Hls",
+                        "https://www.youtube.com/embed/mS3pX62w8Co"
+                    ],
+                    "70-80": [
+                        "https://www.youtube.com/embed/qM8hwDbFeLw",
+                        "https://www.youtube.com/embed/1fEYYbFXdEc"
+                    ]
+                }
+            };
+
+            const videoSection = document.createElement('div');
+            videoSection.className = 'video-section';
+            videoSection.style.display = 'block';
+
+            const heading = document.createElement('h2');
+            heading.textContent = category;
+            videoSection.appendChild(heading);
+
+            const videoContainer = document.createElement('div');
+            videoContainer.className = 'video-container';
+
+            if (category === "Yoga") {
+                let ageGroup = "";
+                if (age >= 40 && age < 50) ageGroup = "40-50";
+                else if (age >= 50 && age < 60) ageGroup = "50-60";
+                else if (age >= 60 && age < 70) ageGroup = "60-70";
+                else if (age >= 70 && age < 80) ageGroup = "70-80";
+
+                if (videoData[category][ageGroup]) {
+                    videoData[category][ageGroup].forEach(video => {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = video;
+                        iframe.allowFullscreen = true;
+                        videoContainer.appendChild(iframe);
+                    });
+                } else {
+                    videoContainer.innerHTML = "<p>No videos available for this age group.</p>";
+                }
+            } else {
+                if (videoData[category]) {
+                    videoData[category].forEach(video => {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = video;
+                        iframe.allowFullscreen = true;
+                        videoContainer.appendChild(iframe);
+                    });
+                } else {
+                    videoContainer.innerHTML = "<p>No videos available for this category.</p>";
+                }
+            }
+
+            videoSection.appendChild(videoContainer);
+            videoOutput.appendChild(videoSection);
+        }
+
+        displayVideos();
+    </script>
+</body>
+</html>

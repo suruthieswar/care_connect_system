@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Notes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar {
+            background-color: #28a745;
+        }
+        .btn-nav {
+            margin: 20px 5px;
+        }
+        .delete-btn {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1" id="category-name">Text Notes</span>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <textarea id="text-note" class="form-control my-3" rows="4" placeholder="Type your note here..."></textarea>
+        <button class="btn btn-primary w-100 mb-3" onclick="saveTextNote()">Save Note</button>
+        <h3>Saved Notes</h3>
+        <ul id="text-notes-list" class="list-group"></ul>
+        <div class="d-flex justify-content-center mt-4">
+            <button class="btn btn-outline-secondary btn-nav" onclick="goBack()">Back</button>
+            <button class="btn btn-outline-secondary btn-nav" onclick="goHome()">Home</button>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get('category') || 'General';
+        document.getElementById('category-name').textContent = `${category} Notes`;
+
+        const textNotes = JSON.parse(localStorage.getItem('textNotes')) || {};
+
+        function saveTextNote() {
+            const note = document.getElementById('text-note').value.trim();
+            if (note) {
+                if (!textNotes[category]) {
+                    textNotes[category] = [];
+                }
+                textNotes[category].push(note);
+                localStorage.setItem('textNotes', JSON.stringify(textNotes));
+                document.getElementById('text-note').value = '';
+                displayTextNotes();
+            }
+        }
+
+        function deleteTextNote(index) {
+            if (textNotes[category]) {
+                textNotes[category].splice(index, 1);
+                localStorage.setItem('textNotes', JSON.stringify(textNotes));
+                displayTextNotes();
+            }
+        }
+
+        function displayTextNotes() {
+            const notesList = document.getElementById('text-notes-list');
+            notesList.innerHTML = '';
+            if (textNotes[category]) {
+                textNotes[category].forEach((note, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    li.textContent = note;
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-sm btn-danger delete-btn';
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.onclick = () => deleteTextNote(index);
+                    li.appendChild(deleteBtn);
+
+                    notesList.appendChild(li);
+                });
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        displayTextNotes();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

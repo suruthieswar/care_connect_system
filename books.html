@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px auto;
+        }
+
+        .category-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 200px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .category-card:hover {
+            background-color: #f0f0f0;
+        }
+        .nav-buttons {
+    display: flex; /* Makes it a flex container */
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+     /* Ensures the container takes full viewport height */
+}
+
+.nav-buttons a {
+    text-decoration: none; /* Removes underline */
+    padding: 10px 20px; /* Adds padding for the button */
+    background-color:#4CAF50; /* Button background color */
+    color: white; /* Button text color */
+    border-radius: 5px; /* Rounds the corners */
+    font-size: 16px; /* Adjusts text size */
+    font-family: Arial, sans-serif; /* Adjusts font */
+    transition: background-color 0.3s ease; /* Adds hover animation */
+}
+
+.nav-buttons a:hover {
+    background-color: #0056b3; /* Darkens button color on hover */
+}
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Books (புத்தகங்கள்)</h1>
+</header>
+
+<!-- Categories -->
+<div class="categories">
+    <div class="category-card" onclick="location.href='self-help.html'">
+        <h3>Self-Help (சுய உதவி)</h3>
+    </div>
+    <div class="category-card" onclick="location.href='fiction.html'">
+        <h3>Fiction (கற்பனை)</h3>
+    </div>
+    <div class="category-card" onclick="location.href='history.html'">
+        <h3>History (வரலாறு)</h3>
+    </div>
+</div>
+
+<div class="categories">
+    <div class="category-card" onclick="location.href='science.html'">
+        <h3>Science (அறிவியல்)</h3>
+    </div>
+    <div class="category-card" onclick="location.href='autobiography.html'">
+        <h3>Autobiography (சுயசரிதை)</h3>
+    </div>
+</div>
+<div class="nav-buttons">
+    <a href="index2.html">BACK</a>
+</div>
+</body>
+</html>

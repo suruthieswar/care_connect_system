@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riddles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eef2f3;
+        }
+
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .riddle-container {
+            text-align: center;
+            padding: 40px;
+            max-width: 700px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .riddle {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .answer-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .answer-btn:hover {
+            background-color: #45a049;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .nav-buttons a {
+            text-decoration: none;
+            color: white;
+            background-color: #4CAF50;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .nav-buttons a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Riddles (விடுகதைகள்)</h1>
+</header>
+
+<div class="riddle-container" id="riddle-container">
+    <p class="riddle" id="riddle-text">விண்ணில் எழுந்து மேலே போய், கீழே விழும் மழை! அது என்ன?</p>
+    <button class="answer-btn" onclick="showAnswer()">Show Answer</button>
+    <p class="answer" id="answer-text" style="display: none;">விடை: பனிக்கட்டிகள் </p>
+</div>
+
+<div class="nav-buttons">
+    <a href="#" id="prev-btn" onclick="prevRiddle()" style="visibility: hidden;">Previous</a>
+    <a href="index2.html">Home</a>
+    <a href="#" id="next-btn" onclick="nextRiddle()">Next</a>
+</div>
+
+<script>
+    // Check if SpeechSynthesis is supported in the browser
+    if (!('speechSynthesis' in window)) {
+        alert("Your browser does not support Speech Synthesis. Please try using a modern browser.");
+    }
+
+    const riddles = [
+        { question: "நான் திரும்பி திரும்பி வருவேன், ஆனால் நான் ஒருபோதும் தேய்வதில்லை. அது என்ன?", answer: "கற்றாழை" },
+        { question: "எதற்கு கண்ணுகள் இல்லை, ஆனால் உலகத்தைக் காண்கிறது?", answer: "கண்ணாடி." },
+        { question: "நான் ஒரு கடல். ஆனால் எப்போதும் உலர்ந்திருக்கிறேன். நான் யார்?", answer: "மணற்கடல்." },
+        { question: "நான் நீண்ட முகம் கொண்டுள்ளேன். ஆனால், முழுமையாய் பரிமாறுகிறேன். நான் யார்?", answer: "தட்டுப்பலகை." },
+        { question: "நான் மூன்று கால்களுடன் நிற்பேன், ஆனால் நான்காவது காலில் சோர்வடைவேன். நான் யார்?", answer: "மேசை." },
+        { question: "நான் உன் பாதங்களைத் தொடர்வேன், ஆனால் என்னை ஒருபோதும் பிடிக்க முடியாது. அது என்ன?", answer: "நிழல்." },
+        { question: "நான் சென்று கொண்டிருப்பேன், ஆனால் நிற்க மாட்டேன். நான் யார்?", answer: "நேரம்." },
+        { question: "என்னிடம் நீர் இருக்கிறது, ஆனால் நான் ஒரு பாலைவனம். அது என்ன?", answer: "ஓசோன்ஸ்." },
+        { question: "தலை இருக்கிறது, ஆனால் மூளை இல்லை. அது என்ன?", answer: "திராட்சை." },
+        { question: "நான் பார்க்கவே பார்க்க முடியாது. ஆனால் என் மூலம் பார்வை பிரகாசமாகிறது. நான் யார்?", answer: "விளக்கு." },
+        { question: "வெள்ளம் வராத பழைய தண்ணீர். அது என்ன?", answer: "கண்ணீர்." },
+        { question: "குழந்தைகள் என்னை விரும்புகின்றனர், ஆனால் நான் அவர்களை காயப்படுத்துகிறேன். நான் யார்?", answer: "கத்தி" },
+        { question: "காற்றிலே பிறந்தேன், ஆனால் மண்ணில் இறந்தேன். நான் யார்?", answer: "மழை." },
+        { question: "ஒரு புத்தகம் பல கதைகள் கொண்டது, ஆனால் பேசாது. அது என்ன?", answer: "நூலகம்." },
+        { question: "நான் உள்ளே சென்று உன் மனதை மாற்றுவேன். நான் யார்?", answer: "புத்தகம்." },
+        { question: "நீ அடித்தால் அழகாக ஒலிக்கிறேன். ஆனால் நான் உடைந்துவிட மாட்டேன். நான் யார்?", answer: "மேளம்." },
+        { question: "நான் வெளிச்சத்தை உறிஞ்சுகிறேன், ஆனால் அதை கொடுக்க மாட்டேன். நான் யார்?", answer: "கறுப்பு நிறம்." },
+        { question: "தலை இருக்கிறது, ஆனால் சுவாசிக்க மாட்டேன். அது என்ன?", answer: "பாசி." },
+
+        // Added more riddles
+        { question: "What comes once in a minute, twice in a moment, but never in a thousand years?", answer: "The letter 'M'." },
+        { question: "I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?", answer: "An echo." },
+        { question: "The more you take, the more you leave behind. What am I?", answer: "Footsteps." },
+        { question: "What can travel around the world while staying in the corner?", answer: "A stamp." },
+        { question: "What is full of holes but still holds a lot of weight?", answer: "A net." },
+        { question: "What has keys but can't open locks?", answer: "A piano." },
+        { question: "What has a head, a tail, but no body?", answer: "A coin." },
+        { question: "What is always in front of you but can’t be seen?", answer: "The future." },
+        { question: "What gets wetter as it dries?", answer: "A towel." },
+        { question: "What can be cracked, made, told, and played?", answer: "A joke." }
+    ];
+
+    let currentRiddle = 0;
+
+    function showAnswer() {
+        const answer = document.getElementById("answer-text");
+        answer.style.display = "block";
+        speakText(answer.textContent); // Speak the answer
+    }
+
+    function speakText(text) {
+        if (window.speechSynthesis) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'ta-IN'; // Set the language to Tamil
+            window.speechSynthesis.speak(speech);
+        } else {
+            alert("Speech synthesis is not supported in your browser.");
+        }
+    }
+
+    function nextRiddle() {
+        if (currentRiddle < riddles.length - 1) {
+            currentRiddle++;
+            updateRiddle();
+        }
+    }
+
+    function prevRiddle() {
+        if (currentRiddle > 0) {
+            currentRiddle--;
+            updateRiddle();
+        }
+    }
+
+    function updateRiddle() {
+        const riddle = riddles[currentRiddle];
+        document.getElementById("riddle-text").textContent = riddle.question;
+        document.getElementById("answer-text").textContent = "விடை: " + riddle.answer;
+        document.getElementById("answer-text").style.display = "none";
+
+        document.getElementById("prev-btn").style.visibility = currentRiddle === 0 ? "hidden" : "visible";
+        document.getElementById("next-btn").style.visibility = currentRiddle === riddles.length - 1 ? "hidden" : "visible";
+
+        speakText(riddle.question); // Speak the riddle's question
+    }
+
+    window.onload = function() {
+        updateRiddle(); // Initialize the first riddle
+    };
+</script>
+
+</body>
+</html>

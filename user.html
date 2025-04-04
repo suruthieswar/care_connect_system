@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Manual - Elder Companion App</title>
+  <link rel="stylesheet" href="user.css">
+  <style>
+    .back-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 18px;
+      margin: 20px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+      background-color: #45a049;
+    }
+
+    /* Optional: Style for voice status message */
+    .voice-status {
+      text-align: center;
+      font-size: 16px;
+      margin-top: 10px;
+      color: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header">
+      <h1 id="title">User Manual</h1>
+      <p class="subtitle" id="subtitle">A simple guide to using your Elder Companion App</p>
+      <div class="language-toggle">
+        <button onclick="changeLanguage('english')">English</button>
+        <button onclick="changeLanguage('tamil')">தமிழ்</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="content" id="manual-content">
+      <!-- Manual content will be dynamically updated here -->
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer">
+      <p>&copy; 2025 Elder Companion App | Designed with Elder Care in Mind</p>
+    </div>
+  </footer>
+
+  <!-- Back Button -->
+  <div class="nav-buttons" style="text-align:center;">
+    <a href="help.html" class="back-button">BACK</a>
+  </div>
+
+  <!-- Display voice command status -->
+  <p class="voice-status" id="voiceStatus">Listening for "back" command...</p>
+
+  <script src="user.js"></script>
+  <script>
+    // Check if the browser supports the Web Speech API
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if ('SpeechRecognition' in window) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;  // Keep listening continuously
+      recognition.lang = 'en-US';
+
+      recognition.onresult = function(event) {
+        // Get the most recent result and convert it to lowercase
+        const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+        console.log("Voice Command Recognized:", transcript);
+
+        // If the recognized phrase includes "back", navigate to help.html
+        if (transcript.includes("back")) {
+          window.location.href = "help.html";
+        }
+      };
+
+      recognition.onerror = function(event) {
+        console.error("Speech recognition error:", event.error);
+      };
+
+      // Start listening
+      recognition.start();
+    } else {
+      console.warn("Speech Recognition is not supported in this browser.");
+      document.getElementById("voiceStatus").textContent = "Voice commands are not supported in this browser.";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<!-- Similar to `view_voice_notes.html` but loads from `typedNotes` -->
+
+<script>
+    function loadTypedNotes() {
+        const typedNotes = JSON.parse(localStorage.getItem("typedNotes")) || [];
+        if (typedNotes.length > 0) {
+            const notesContainer = document.getElementById("typedNotesList");
+            typedNotes.forEach(note => {
+                const noteDiv = document.createElement("div");
+                noteDiv.className = "note";
+                noteDiv.innerText = note;
+                notesContainer.appendChild(noteDiv);
+            });
+        } else {
+            alert("No typed notes found.");
+        }
+    }
+
+    window.onload = loadTypedNotes;
+</script>

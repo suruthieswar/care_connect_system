@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathing Exercises</title>
+    <style>
+        /* Styles omitted for brevity */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Breathing Exercises</h1>
+        <div class="video-container" id="videoContainer"></div>
+        <button class="back-btn" onclick="window.history.back()">Go Back</button>
+    </div>
+
+    <script>
+        // Function to retrieve age from localStorage
+        function getAge() {
+            return parseInt(localStorage.getItem('age'), 10);
+        }
+
+        // Function to display videos based on the age group
+        function displayVideos() {
+            const age = getAge();
+            const videoContainer = document.getElementById('videoContainer');
+            const videosByAge = {
+                "40-59": [
+                    "https://www.youtube.com/embed/XXCn_2VH3tE?si=JsRp7OD8a-73HbHp",
+                    "https://www.youtube.com/embed/blbv5UTBCGg?si=KFc2bUWrI_NADllo"
+                ],
+                "60-80": [
+                    "https://www.youtube.com/embed/C4bofW53sO8?si=5okvb4SIgAJU5E_F"
+                ]
+            };
+            let ageGroup = "";
+            if (age >= 40 && age <= 59) {
+                ageGroup = "40-59";
+            } else if (age >= 60 && age <= 80) {
+                ageGroup = "60-80";
+            }
+            if (videosByAge[ageGroup]) {
+                videosByAge[ageGroup].forEach(video => {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = video;
+                    iframe.allowFullscreen = true;
+                    videoContainer.appendChild(iframe);
+                });
+            } else {
+                videoContainer.innerHTML = "<p>No videos available for your age group.</p>";
+            }
+        }
+
+        // Voice command for back action
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.lang = 'en-US';
+            recognition.onresult = function(event) {
+                const command = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+                if (command.includes("back")) {
+                    window.history.back();
+                }
+            };
+            recognition.start();
+        } else {
+            console.log("Speech Recognition is not supported in this browser.");
+        }
+
+        displayVideos();
+    </script>
+</body>
+</html>
